@@ -1,0 +1,38 @@
+/* EtlKit — base element styles & helpers.
+   Opt-in resets that keep specimens consistent without being heavy-handed. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: var(--text-body);
+  color: var(--text-primary);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 { margin: 0; color: var(--text-primary); }
+p { margin: 0; }
+a { color: var(--text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+::selection { background: var(--ek-vermillion-100); color: var(--ek-vermillion-700); }
+
+/* Wordmark: Etl (ink) + Kit (vermillion), set in Space Grotesk */
+.ek-wordmark {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tight);
+  color: var(--text-primary);
+}
+.ek-wordmark > b { color: var(--ek-vermillion); font-weight: var(--fw-bold); }
+
+/* Utility text styles */
+.ek-eyebrow {
+  font: var(--fw-medium) var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.ek-mono { font-family: var(--font-mono); }

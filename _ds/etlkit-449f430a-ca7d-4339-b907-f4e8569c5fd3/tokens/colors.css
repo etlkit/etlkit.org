@@ -1,0 +1,64 @@
+/* EtlKit — Color tokens
+   Brand: Vermillion #F8462D — a single decisive, energetic accent.
+   Neutrals: cool gray ramp on near-black ink. Surfaces stay calm so the
+   accent does the talking. Feedback colours are distinct from the brand red. */
+
+:root {
+  /* ---- Brand accent (Vermillion) ---- */
+  --ek-vermillion: #F8462D;     /* primary brand colour */
+
+  /* Vermillion ramp (states & tints) */
+  --ek-vermillion-700: #BE2814; /* active / pressed */
+  --ek-vermillion-600: #E5351C; /* hover */
+  --ek-vermillion-500: #F8462D; /* = --ek-vermillion */
+  --ek-vermillion-400: #FA6E57;
+  --ek-vermillion-300: #FB9D8C;
+  --ek-vermillion-100: #FEDCD5;
+  --ek-vermillion-50:  #FFF1EE;
+
+  /* ---- Neutrals ---- */
+  --ek-white:   #FFFFFF;
+  --ek-gray-50: #F5F5F7;        /* page background */
+  --ek-gray-100:#ECECEF;
+  --ek-gray-200:#DEDEE3;
+  --ek-gray-300:#C4C4CC;
+  --ek-gray-400:#9A9AA5;
+  --ek-gray-500:#71717E;
+  --ek-gray-600:#54545F;
+  --ek-gray-700:#3B3B44;
+  --ek-gray-800:#26262C;
+  --ek-gray-900:#16161A;        /* ink */
+
+  /* ---- Semantic feedback ---- */
+  --ek-success: #1F9D55;
+  --ek-success-50: #E7F6EE;
+  --ek-warning: #E89B1C;
+  --ek-warning-50: #FCF2DF;
+  --ek-danger:  #E5351C;        /* aligns with brand vermillion */
+  --ek-danger-50: #FFF1EE;
+  --ek-info:    #2A6FDB;        /* trustworthy blue, distinct from brand */
+  --ek-info-50: #EAF1FC;
+
+  /* ---- Semantic aliases ---- */
+  --color-brand: var(--ek-vermillion);
+  --color-brand-hover: var(--ek-vermillion-600);
+  --color-brand-active: var(--ek-vermillion-700);
+
+  --bg-page: var(--ek-gray-50);
+  --surface-card: var(--ek-white);
+  --surface-sunken: var(--ek-gray-50);
+  --surface-inverse: var(--ek-gray-900);
+
+  --text-primary: var(--ek-gray-900);
+  --text-secondary: var(--ek-gray-600);
+  --text-muted: var(--ek-gray-400);
+  --text-on-brand: var(--ek-white);
+  --text-link: var(--ek-vermillion-600);
+
+  --border-subtle: var(--ek-gray-200);
+  --border-default: var(--ek-gray-300);
+  --border-strong: var(--ek-gray-400);
+  --border-focus: var(--ek-vermillion);
+
+  --focus-ring: 0 0 0 3px rgba(248, 70, 45, 0.32);
+}

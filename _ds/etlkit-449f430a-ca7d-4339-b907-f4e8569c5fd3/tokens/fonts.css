@@ -1,0 +1,7 @@
+/* EtlKit — Webfonts
+   Display / UI: Space Grotesk (300–700) — a modern technical grotesque with a
+   slightly engineered character; the project's signature voice.
+   Mono: IBM Plex Mono — for code, IDs, figures and tabular data. Both are
+   open-source, fitting an open-source toolkit. */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');

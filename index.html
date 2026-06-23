@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EtlKit — open-source ETL toolkit for .NET</title>
+<meta name="description" content="EtlKit is a fully open-source (MIT) ETL library and data integration toolbox for .NET. Build readable, testable data pipelines in C#.">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="apple-touch-icon" href="assets/etlkit-avatar-512.png">
+<meta property="og:title" content="EtlKit — open-source ETL toolkit for .NET">
+<meta property="og:description" content="A fully open-source (MIT) ETL library and data integration toolbox for .NET.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://etlkit.org">
+<link rel="stylesheet" href="etlkit-tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="EtlKit home">
+      <img src="assets/etlkit-lockup.svg" alt="EtlKit">
+    </a>
+    <nav class="nav">
+      <a class="hide-sm" href="https://github.com/etlkit/etlkit/blob/master/docs/README.md">Docs</a>
+      <a class="hide-sm" href="https://rpsft.github.io/etlbox/">API</a>
+      <a class="hide-sm" href="https://www.nuget.org/packages/EtlKit">NuGet</a>
+      <a class="gh" href="https://github.com/etlkit/etlkit">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
+        <span>GitHub</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="ek-eyebrow eyebrow">Open source <span class="dot">·</span> MIT <span class="dot">·</span> .NET Standard 2.0</p>
+      <h1>The open-source <em>ETL</em> toolkit for .NET.</h1>
+      <p class="lead">EtlKit is a lightweight ETL (extract · transform · load) library and data integration toolbox for .NET. Build your own data pipelines programmatically in C# — readable, testable, and tracked in source control like the rest of your code.</p>
+
+      <div class="install">
+        <code><span class="pfx">$ </span>dotnet add package EtlKit</code>
+        <button id="copyBtn" type="button" aria-label="Copy install command">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"></rect><path d="M3.5 10.5h-1A1.5 1.5 0 0 1 1 9V2.5A1.5 1.5 0 0 1 2.5 1H9a1.5 1.5 0 0 1 1.5 1.5v1"></path></svg>
+          <span id="copyLbl">Copy</span>
+        </button>
+      </div>
+
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/etlkit/etlkit/blob/master/docs/README.md">Read the docs</a>
+        <a class="btn btn-ghost" href="https://github.com/etlkit/etlkit">View source on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why -->
+  <section class="section-line">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Code your ETL, not boilerplate.</h2>
+        <p>A comprehensive C# class library that manages your whole ETL or ELT — with control-flow tasks that replace ADO.NET ceremony with one line of readable code.</p>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <h3>Build ETL in .NET</h3>
+          <p>Write pipelines in your favourite .NET language, fitting your team's skills and a mature toolset. Source, transform and destination components compose into a flow.</p>
+        </div>
+        <div class="feature">
+          <h3>Runs everywhere</h3>
+          <p>Written in .NET Standard 2.0 and tested on Linux, macOS and Windows with current .NET Core &amp; .NET. Develop and debug locally on your desktop.</p>
+        </div>
+        <div class="feature">
+          <h3>Made for big data</h3>
+          <p>Built on Microsoft's TPL Dataflow with per-component buffers and async, in-memory processing — designed to move large volumes with high throughput.</p>
+        </div>
+        <div class="feature">
+          <h3>Manage change</h3>
+          <p>Track ETL logic in git, review it, and run it through your existing CI/CD. A fully functional alternative to GUI tools like SSIS.</p>
+        </div>
+      </div>
+
+      <div class="code-card" aria-label="Example data flow">
+        <div class="bar">
+          <span class="d"></span><span class="d"></span><span class="d"></span>
+          <span class="lbl">Pipeline.cs</span>
+        </div>
+<pre><span class="c">// Read from a CSV, bump a value, write to a database table</span>
+<span class="k">var</span> source = <span class="k">new</span> <span class="t">CsvSource</span>&lt;Row&gt;(<span class="s">"input.csv"</span>);
+
+<span class="k">var</span> transform = <span class="k">new</span> <span class="t">RowTransformation</span>&lt;Row, Row&gt;(row =&gt; {
+    row.Value += 1;
+    <span class="k">return</span> row;
+});
+
+<span class="k">var</span> dest = <span class="k">new</span> <span class="t">DbDestination</span>&lt;Row&gt;(connection, <span class="s">"DestinationTable"</span>);
+
+source.<span class="t">LinkTo</span>(transform);
+transform.<span class="t">LinkTo</span>(dest);
+
+source.<span class="t">Execute</span>();
+dest.<span class="t">Wait</span>();</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Integrations -->
+  <section class="section-line">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Connect to what you already use.</h2>
+        <p>Source and destination components for the most common databases, queues and file types — and a <code class="ek-mono">CustomSource</code> / <code class="ek-mono">CustomDestination</code> for anything else.</p>
+      </div>
+      <table class="matrix">
+        <thead>
+          <tr><th>Category</th><th>Support for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Databases</td><td>SQL Server, Postgres, SQLite, MySQL, ClickHouse</td></tr>
+          <tr><td>Queues &amp; streaming</td><td>Kafka (full), RabbitMQ (destination)</td></tr>
+          <tr><td>Flat files</td><td>CSV, JSON, XML</td></tr>
+          <tr><td>Office</td><td>Microsoft Access, Excel (source)</td></tr>
+          <tr><td>API</td><td>REST, OpenAI</td></tr>
+          <tr><td>Memory</td><td>.NET IEnumerable &amp; collections</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Resources -->
+  <section class="section-line">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Resources</h2>
+        <p>Everything lives in the open. Browse the guides, generate the API reference, or grab a release.</p>
+      </div>
+      <div class="links">
+        <a class="link-card" href="https://github.com/etlkit/etlkit/blob/master/docs/README.md">
+          <span class="nm">Documentation <span class="arr">↗</span></span>
+          <p>Hand-written guides and tutorials, browsable directly in the repo.</p>
+        </a>
+        <a class="link-card" href="https://rpsft.github.io/etlbox/">
+          <span class="nm">API Reference <span class="arr">↗</span></span>
+          <p>Generated from XML comments — the full public surface of every component.</p>
+        </a>
+        <a class="link-card" href="https://github.com/etlkit/etlkit/releases">
+          <span class="nm">Releases <span class="arr">↗</span></span>
+          <p>Tagged versions and release notes on GitHub.</p>
+        </a>
+        <a class="link-card" href="https://www.nuget.org/packages?q=EtlKit">
+          <span class="nm">NuGet packages <span class="arr">↗</span></span>
+          <p>EtlKit and its connector packages (Kafka, MongoDB, REST, and more).</p>
+        </a>
+        <a class="link-card" href="https://github.com/etlkit/etlkit/blob/master/CHANGELOG.md">
+          <span class="nm">Changelog <span class="arr">↗</span></span>
+          <p>What changed between versions, including the 1.x → 2.0 rename mapping.</p>
+        </a>
+        <a class="link-card" href="https://github.com/etlkit/etlkit">
+          <span class="nm">Source code <span class="arr">↗</span></span>
+          <p>The full solution on GitHub — issues, pull requests, and tests.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="col-note">
+      <span class="ek-wordmark">Etl<b>Kit</b></span>
+      <p>A fork that continues the open-source 1.x lineage of the original ETLBox library by Andreas Lennartz, kept current with modern .NET and database drivers. As of 2.0, <strong>EtlBox.Classic</strong> was renamed to <strong>EtlKit</strong> to avoid package and namespace conflicts.</p>
+    </div>
+    <nav class="foot-links" aria-label="Footer">
+      <a href="https://github.com/etlkit/etlkit">GitHub</a>
+      <a href="https://github.com/etlkit/etlkit/blob/master/docs/README.md">Documentation</a>
+      <a href="https://rpsft.github.io/etlbox/">API Reference</a>
+      <a href="https://www.nuget.org/packages?q=EtlKit">NuGet</a>
+      <a href="https://github.com/etlkit/etlkit/releases">Releases</a>
+      <a href="https://github.com/etlkit/etlkit/blob/master/LICENSE">MIT License</a>
+    </nav>
+    <p class="meta">EtlKit is free and open-source software, released under the MIT License. Not affiliated with, or branded as, RapidSoft or the closed-source ETLBox 2.x. © 2026 EtlKit contributors.</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('copyBtn');
+    var lbl = document.getElementById('copyLbl');
+    btn.addEventListener('click', function () {
+      var text = 'dotnet add package EtlKit';
+      var done = function () {
+        lbl.textContent = 'Copied';
+        setTimeout(function () { lbl.textContent = 'Copy'; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta); done();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
