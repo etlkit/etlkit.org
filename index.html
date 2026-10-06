@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>EtlKit — open-source ETL toolkit for .NET</title>
+    <title>EtlKit — open-source ETL library for .NET and C#</title>
     <meta
       name="description"
-      content="EtlKit is a fully open-source (MIT) ETL library and data integration toolbox for .NET. Build readable, testable data pipelines in C#."
+      content="EtlKit is a free, MIT-licensed ETL library for .NET. Build data pipelines in C# across SQL Server, Postgres, MySQL, ClickHouse, Kafka, CSV and more — a code-first SSIS alternative."
     />
+    <link rel="canonical" href="https://www.etlkit.org/" />
     <link
       rel="icon"
       type="image/png"
@@ -21,16 +22,80 @@
       href="assets/favicon-16.png"
     />
     <link rel="apple-touch-icon" href="assets/etlkit-avatar-512.png" />
+    <meta name="llms-txt" content="/llms.txt" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EtlKit" />
+    <meta property="og:url" content="https://www.etlkit.org/" />
     <meta
       property="og:title"
       content="EtlKit — open-source ETL toolkit for .NET"
     />
     <meta
       property="og:description"
+      content="A fully open-source (MIT) ETL library and data integration toolbox for .NET. Pipelines in C# or XML, from databases and files to Kafka and change streams."
+    />
+    <meta
+      property="og:image"
+      content="https://www.etlkit.org/assets/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="EtlKit — the open-source ETL toolkit for .NET. dotnet add package EtlKit"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="EtlKit — open-source ETL toolkit for .NET"
+    />
+    <meta
+      name="twitter:description"
       content="A fully open-source (MIT) ETL library and data integration toolbox for .NET."
     />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://etlkit.org" />
+    <meta
+      name="twitter:image"
+      content="https://www.etlkit.org/assets/og-image.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="EtlKit — the open-source ETL toolkit for .NET. dotnet add package EtlKit"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.etlkit.org/#website",
+            "url": "https://www.etlkit.org/",
+            "name": "EtlKit",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://www.etlkit.org/#software",
+            "name": "EtlKit",
+            "alternateName": "EtlBox.Classic",
+            "description": "Open-source ETL library and data integration toolbox for .NET. Data flow and control flow components for building data pipelines in C# or XML.",
+            "url": "https://www.etlkit.org/",
+            "image": "https://www.etlkit.org/assets/og-image.png",
+            "codeRepository": "https://github.com/etlkit/etlkit",
+            "license": "https://opensource.org/licenses/MIT",
+            "programmingLanguage": {
+              "@type": "ComputerLanguage",
+              "name": "C#"
+            },
+            "runtimePlatform": ".NET Standard 2.0",
+            "keywords": "ETL, ELT, .NET, C#, data integration, data pipeline, SSIS alternative, SQL Server, PostgreSQL, Kafka",
+            "isPartOf": { "@id": "https://www.etlkit.org/#website" }
+          }
+        ]
+      }
+    </script>
+
     <link rel="stylesheet" href="etlkit-tokens.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -41,17 +106,14 @@
           <img src="assets/etlkit-lockup.svg" alt="EtlKit" />
         </a>
         <nav class="nav">
+          <a class="hide-sm" href="#connectors">Connectors</a>
+          <a class="hide-sm" href="#compare">Compare</a>
           <a
             class="hide-sm"
             href="https://github.com/etlkit/etlkit/blob/master/docs/README.md"
             >Docs</a
           >
-          <a class="hide-sm" href="https://rpsft.github.io/etlbox/">API</a>
-          <a
-            class="hide-sm"
-            href="https://www.nuget.org/packages?q=Owner%3AEtlKit"
-            >NuGet</a
-          >
+          <a class="hide-sm" href="https://etlkit.github.io/etlkit/">API</a>
           <a class="gh" href="https://github.com/etlkit/etlkit">
             <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
               <path
@@ -74,10 +136,9 @@
           </p>
           <h1>The open-source <em>ETL</em> toolkit for .NET.</h1>
           <p class="lead">
-            EtlKit is a lightweight ETL (extract · transform · load) library and
-            data integration toolbox for .NET. Build your own data pipelines
-            programmatically in C# — readable, testable, and tracked in source
-            control like the rest of your code.
+            EtlKit is a free, MIT-licensed ETL library for .NET. Move data
+            between databases, files and message queues with a few lines of C# —
+            readable, testable, and versioned in git with the rest of your code.
           </p>
 
           <div class="install">
@@ -105,6 +166,20 @@
             </button>
           </div>
 
+          <div class="code-card" aria-label="Example data flow">
+            <div class="bar">
+              <span class="d"></span><span class="d"></span
+              ><span class="d"></span>
+              <span class="lbl">ImportOrders.cs</span>
+            </div>
+            <pre><span class="k">var</span> source = <span class="k">new</span> <span class="t">CsvSource</span>&lt;Order&gt;(<span class="s">"orders.csv"</span>);
+<span class="k">var</span> clean  = <span class="k">new</span> <span class="t">RowTransformation</span>&lt;Order&gt;(o =&gt; { o.Email = o.Email.Trim(); <span class="k">return</span> o; });
+<span class="k">var</span> dest   = <span class="k">new</span> <span class="t">DbDestination</span>&lt;Order&gt;(sqlConnection, <span class="s">"Orders"</span>);
+
+source.<span class="t">LinkTo</span>(clean).<span class="t">LinkTo</span>(dest);
+<span class="k">await</span> source.<span class="t">ExecuteAsync</span>(); <span class="k">await</span> dest.Completion;</pre>
+          </div>
+
           <div class="cta">
             <a
               class="btn btn-primary"
@@ -118,123 +193,602 @@
         </div>
       </section>
 
-      <!-- Why -->
-      <section class="section-line">
+      <!-- Highlights -->
+      <section class="section-line stats-section" aria-label="Highlights">
+        <div class="wrap">
+          <ul class="stats">
+            <li>
+              <span class="num">6</span>
+              <span class="lbl"
+                >relational databases — SQL Server, PostgreSQL, MySQL, SQLite,
+                ClickHouse, Access</span
+              >
+            </li>
+            <li>
+              <span class="num">3</span>
+              <span class="lbl"
+                >streaming sources — Kafka, MongoDB change streams, Postgres
+                table tail</span
+              >
+            </li>
+            <li>
+              <span class="num">4</span>
+              <span class="lbl"
+                >file formats — CSV, JSON, XML, Excel; from disk or over
+                HTTP</span
+              >
+            </li>
+            <li>
+              <span class="num">XML</span>
+              <span class="lbl"
+                >pipelines declared as configuration, loaded at runtime</span
+              >
+            </li>
+            <li>
+              <span class="num">MIT</span>
+              <span class="lbl">all 15 NuGet packages, no paid tier</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="section-line" id="how-it-works">
         <div class="wrap">
           <div class="section-head">
             <h2>Code your ETL, not boilerplate.</h2>
             <p>
-              A comprehensive C# class library that manages your whole ETL or
-              ELT — with control-flow tasks that replace ADO.NET ceremony with
-              one line of readable code.
+              Every pipeline is three steps: create the components, link them
+              with
+              <code class="ek-mono">LinkTo()</code>, then execute the source and
+              wait for the destination. Rows stream through TPL Dataflow
+              buffers, so only the rows in flight are held in memory.
             </p>
           </div>
+
+          <div class="flow" aria-label="EtlKit data flow">
+            <div class="flow-col">
+              <span class="flow-step">Sources</span>
+              <ul>
+                <li>DbSource</li>
+                <li>CsvSource</li>
+                <li>JsonSource</li>
+                <li>ExcelSource</li>
+                <li>KafkaJsonSource</li>
+                <li>MongoChangeStreamSource</li>
+                <li>PostgresXminTailSource</li>
+              </ul>
+            </div>
+            <div class="flow-arrow" aria-hidden="true">
+              <svg viewBox="0 0 40 16">
+                <path d="M0 8h36M30 2l6 6-6 6"></path>
+              </svg>
+              <span class="ek-mono">LinkTo</span>
+            </div>
+            <div class="flow-col">
+              <span class="flow-step">Transformations</span>
+              <ul>
+                <li>RowTransformation</li>
+                <li>LookupTransformation</li>
+                <li>Aggregation</li>
+                <li>Multicast</li>
+                <li>MergeJoin</li>
+                <li>RestTransformation</li>
+                <li>AIBatchTransformation</li>
+              </ul>
+            </div>
+            <div class="flow-arrow" aria-hidden="true">
+              <svg viewBox="0 0 40 16">
+                <path d="M0 8h36M30 2l6 6-6 6"></path>
+              </svg>
+              <span class="ek-mono">LinkTo</span>
+            </div>
+            <div class="flow-col">
+              <span class="flow-step">Destinations</span>
+              <ul>
+                <li>DbDestination</li>
+                <li>DbMerge</li>
+                <li>CsvDestination</li>
+                <li>JsonDestination</li>
+                <li>KafkaTransformation</li>
+                <li>RabbitMqTransformation</li>
+                <li>CheckpointWriter</li>
+              </ul>
+            </div>
+            <div class="flow-error">
+              <span class="ek-mono">LinkErrorTo()</span>
+              routes rows that fail in any component to an error table or log,
+              instead of stopping the load.
+            </div>
+          </div>
+
           <div class="features">
             <div class="feature">
               <h3>Build ETL in .NET</h3>
               <p>
-                Write pipelines in your favourite .NET language, fitting your
-                team's skills and a mature toolset. Source, transform and
-                destination components compose into a flow.
+                Write pipelines in your favourite .NET language, with your IDE,
+                debugger and unit tests. Source, transformation and destination
+                components compose into a flow.
               </p>
             </div>
             <div class="feature">
               <h3>Runs everywhere</h3>
               <p>
                 Written in .NET Standard 2.0 and tested on Linux, macOS and
-                Windows with current .NET Core &amp; .NET. Develop and debug
-                locally on your desktop.
+                Windows with current .NET. Embed it in a web app, a worker
+                service or a console job.
               </p>
             </div>
             <div class="feature">
               <h3>Made for big data</h3>
               <p>
                 Built on Microsoft's TPL Dataflow with per-component buffers and
-                async, in-memory processing — designed to move large volumes
-                with high throughput.
+                batched bulk writes —
+                <code class="ek-mono">SqlBulkCopy</code> on SQL Server, binary
+                <code class="ek-mono">COPY</code>
+                on PostgreSQL.
               </p>
             </div>
             <div class="feature">
               <h3>Manage change</h3>
               <p>
                 Track ETL logic in git, review it, and run it through your
-                existing CI/CD. A fully functional alternative to GUI tools like
-                SSIS.
+                existing CI/CD. Control-flow tasks replace ADO.NET ceremony for
+                DDL and SQL with one line each.
               </p>
             </div>
-          </div>
-
-          <div class="code-card" aria-label="Example data flow">
-            <div class="bar">
-              <span class="d"></span><span class="d"></span
-              ><span class="d"></span>
-              <span class="lbl">Pipeline.cs</span>
-            </div>
-            <pre><span class="c">// Read from a CSV, bump a value, write to a database table</span>
-<span class="k">var</span> source = <span class="k">new</span> <span class="t">CsvSource</span>&lt;Row&gt;(<span class="s">"input.csv"</span>);
-
-<span class="k">var</span> transform = <span class="k">new</span> <span class="t">RowTransformation</span>&lt;Row, Row&gt;(row =&gt; {
-    row.Value += 1;
-    <span class="k">return</span> row;
-});
-
-<span class="k">var</span> dest = <span class="k">new</span> <span class="t">DbDestination</span>&lt;Row&gt;(connection, <span class="s">"DestinationTable"</span>);
-
-source.<span class="t">LinkTo</span>(transform);
-transform.<span class="t">LinkTo</span>(dest);
-
-source.<span class="t">Execute</span>();
-dest.<span class="t">Wait</span>();</pre>
           </div>
         </div>
       </section>
 
-      <!-- Integrations -->
-      <section class="section-line">
+      <!-- Use cases -->
+      <section class="section-line" id="use-cases">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>What teams build with it.</h2>
+            <p>
+              EtlKit fits wherever data has to move on a schedule or as it
+              arrives, and the people who own that job already write .NET.
+            </p>
+          </div>
+          <div class="cases">
+            <div class="case">
+              <h3>Reporting loads</h3>
+              <p>
+                Nightly or hourly loads from OLTP databases into a reporting
+                store — SQL Server or PostgreSQL into ClickHouse, with lookups
+                and aggregations on the way.
+              </p>
+            </div>
+            <div class="case">
+              <h3>Table synchronisation</h3>
+              <p>
+                Keep a copy of a table in another database in step with its
+                source:
+                <code class="ek-mono">DbMerge</code> inserts, updates and
+                deletes only what changed.
+              </p>
+            </div>
+            <div class="case">
+              <h3>Partner file imports</h3>
+              <p>
+                CSV, Excel and JSON files from partners or SFTP drops into your
+                database, with malformed rows captured in an error table for
+                follow-up.
+              </p>
+            </div>
+            <div class="case">
+              <h3>Event ingestion</h3>
+              <p>
+                Kafka topics, MongoDB change streams or new rows in a PostgreSQL
+                table, written to a database as they arrive and resumed from a
+                checkpoint after a restart.
+              </p>
+            </div>
+            <div class="case">
+              <h3>Moving off SSIS</h3>
+              <p>
+                Re-implement SSIS packages as C# that builds, tests and deploys
+                with the rest of your services — and runs on Linux.
+              </p>
+            </div>
+            <div class="case">
+              <h3>Enrichment</h3>
+              <p>
+                Call a REST API per row, or send batches to an OpenAI-compatible
+                model to classify or extract fields, inside the same pipeline.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Connectors -->
+      <section class="section-line" id="connectors">
         <div class="wrap">
           <div class="section-head">
             <h2>Connect to what you already use.</h2>
             <p>
-              Source and destination components for the most common databases,
-              queues and file types — and a
+              Source and destination components for common databases, queues and
+              file types — and a
               <code class="ek-mono">CustomSource</code> /
               <code class="ek-mono">CustomDestination</code> for anything else.
+              Most live in the core <code class="ek-mono">EtlKit</code> package;
+              the rest are opt-in add-ons.
             </p>
           </div>
-          <table class="matrix">
-            <thead>
-              <tr>
-                <th>Category</th>
-                <th>Support for</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Databases</td>
-                <td>SQL Server, Postgres, SQLite, MySQL, ClickHouse</td>
-              </tr>
-              <tr>
-                <td>Queues &amp; streaming</td>
-                <td>Kafka (full), RabbitMQ (destination)</td>
-              </tr>
-              <tr>
-                <td>Flat files</td>
-                <td>CSV, JSON, XML</td>
-              </tr>
-              <tr>
-                <td>Office</td>
-                <td>Microsoft Access, Excel (source)</td>
-              </tr>
-              <tr>
-                <td>API</td>
-                <td>REST, OpenAI</td>
-              </tr>
-              <tr>
-                <td>Memory</td>
-                <td>.NET IEnumerable &amp; collections</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-scroll">
+            <table class="matrix caps">
+              <thead>
+                <tr>
+                  <th>Connector</th>
+                  <th>Source</th>
+                  <th>Destination</th>
+                  <th>Streaming</th>
+                  <th>Resumable</th>
+                  <th>Bulk write</th>
+                  <th>Package</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>SQL Server</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td>SqlBulkCopy</td>
+                  <td class="pkg">EtlKit</td>
+                </tr>
+                <tr>
+                  <td>PostgreSQL</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td>Binary COPY</td>
+                  <td class="pkg">EtlKit</td>
+                </tr>
+                <tr>
+                  <td>PostgreSQL table tail</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="y">✓ polling</td>
+                  <td class="y">✓ checkpoint</td>
+                  <td class="n">—</td>
+                  <td class="pkg">EtlKit.PostgresStreaming</td>
+                </tr>
+                <tr>
+                  <td>MySQL</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td>Multi-row INSERT</td>
+                  <td class="pkg">EtlKit</td>
+                </tr>
+                <tr>
+                  <td>SQLite</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td>Batched in a transaction</td>
+                  <td class="pkg">EtlKit</td>
+                </tr>
+                <tr>
+                  <td>ClickHouse</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td>INSERT … FORMAT CSV</td>
+                  <td class="pkg">EtlKit.ClickHouse</td>
+                </tr>
+                <tr>
+                  <td>MS Access (ODBC)</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td>Multi-row INSERT</td>
+                  <td class="pkg">EtlKit</td>
+                </tr>
+                <tr>
+                  <td>MongoDB change streams</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓ resume token</td>
+                  <td class="n">—</td>
+                  <td class="pkg">EtlKit.MongoDB</td>
+                </tr>
+                <tr>
+                  <td>Kafka</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓ producer</td>
+                  <td class="y">✓</td>
+                  <td>Consumer group offsets</td>
+                  <td>Batched producer</td>
+                  <td class="pkg">EtlKit.Kafka</td>
+                </tr>
+                <tr>
+                  <td>RabbitMQ</td>
+                  <td class="n">—</td>
+                  <td class="y">✓ publish</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td class="pkg">EtlKit.RabbitMq</td>
+                </tr>
+                <tr>
+                  <td>CSV · JSON · XML</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td>Streamed, file or HTTP</td>
+                  <td class="pkg">EtlKit</td>
+                </tr>
+                <tr>
+                  <td>Excel</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td class="pkg">EtlKit</td>
+                </tr>
+                <tr>
+                  <td>REST / HTTP</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td>Per-row calls</td>
+                  <td class="pkg">EtlKit.Rest</td>
+                </tr>
+                <tr>
+                  <td>OpenAI-compatible LLM</td>
+                  <td colspan="5">
+                    Batch transformation: prompt template in, structured rows
+                    out
+                  </td>
+                  <td class="pkg">EtlKit.AI</td>
+                </tr>
+                <tr>
+                  <td>.NET collections</td>
+                  <td class="y">✓</td>
+                  <td class="y">✓</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td class="n">—</td>
+                  <td class="pkg">EtlKit</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">
+            <strong>Resumable</strong> sources save their position through
+            <code class="ek-mono">ICheckpointStore</code>
+            and continue from it after a restart (at-least-once). The PostgreSQL
+            tail polls by transaction ID: it sees inserts and updates, but not
+            deletes — it is not logical-replication CDC.
+          </p>
+        </div>
+      </section>
+
+      <!-- Manual code vs EtlKit -->
+      <section class="section-line" id="manual-vs-etlkit">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Hand-written code vs EtlKit.</h2>
+            <p>
+              What a typical data task takes when you write it from scratch on
+              ADO.NET and client libraries, and what it takes with EtlKit.
+            </p>
+          </div>
+          <div class="table-scroll">
+            <table class="matrix vs">
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>By hand</th>
+                  <th>With EtlKit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Bulk load</td>
+                  <td>
+                    <code>SqlBulkCopy</code> with a <code>DataTable</code> on
+                    SQL Server, binary <code>COPY</code> on Postgres, batched
+                    INSERTs elsewhere — one code path per database.
+                  </td>
+                  <td>
+                    <code>DbDestination&lt;T&gt;</code>
+                    picks the fastest write path for the connection and batches
+                    rows for you.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Upsert / sync a table</td>
+                  <td>
+                    A staging table plus
+                    <code>MERGE</code> or <code>ON&nbsp;CONFLICT</code> in each
+                    SQL dialect, and a separate pass for deletions.
+                  </td>
+                  <td>
+                    <code>DbMerge&lt;T&gt;</code> with
+                    <code>[IdColumn]</code> and <code>[CompareColumn]</code>:
+                    full, no-deletions or delta mode, same code on five
+                    databases.
+                  </td>
+                </tr>
+                <tr>
+                  <td>CSV → database</td>
+                  <td>
+                    A reader loop, type conversion, batching and try/catch
+                    around every bad line.
+                  </td>
+                  <td>
+                    <code>CsvSource&lt;T&gt;</code> →
+                    <code>DbDestination&lt;T&gt;</code>; bad rows go to
+                    <code>LinkErrorTo()</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Kafka → database</td>
+                  <td>
+                    A consumer loop, JSON deserialisation, batching writes and
+                    shutdown handling.
+                  </td>
+                  <td>
+                    <code>KafkaJsonSource&lt;T&gt;</code> →
+                    <code>DbDestination&lt;T&gt;</code>
+                    with a cancellation token.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Tail a Postgres table</td>
+                  <td>
+                    A polling query, a stored cursor, and care not to skip rows
+                    from transactions still in flight.
+                  </td>
+                  <td>
+                    <code>PostgresXminTailSource&lt;T&gt;</code>
+                    + <code>CheckpointWriter</code> with a
+                    <code>DbCheckpointStore</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>MongoDB changes → SQL</td>
+                  <td>
+                    A <code>Watch()</code> loop and your own storage for resume
+                    tokens.
+                  </td>
+                  <td>
+                    <code>MongoChangeStreamSource&lt;T&gt;</code>
+                    resumes from the token in its checkpoint store.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- XML pipelines -->
+      <section class="section-line" id="xml-pipelines">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Code, or configuration.</h2>
+            <p>
+              With <code class="ek-mono">EtlKit.Serialization</code>
+              the same components can be declared in XML and loaded at runtime:
+              element names are class names, child elements are properties.
+              Change a pipeline without recompiling the host.
+            </p>
+          </div>
+          <div class="code-card" aria-label="XML pipeline example">
+            <div class="bar">
+              <span class="d"></span><span class="d"></span
+              ><span class="d"></span>
+              <span class="lbl">orders-flow.xml</span>
+            </div>
+            <pre><span class="t">&lt;EtlDataFlowStep&gt;</span>
+  <span class="t">&lt;Pipeline&gt;</span>
+    <span class="t">&lt;CsvSource&gt;</span><span class="t">&lt;Uri&gt;</span>orders.csv<span class="t">&lt;/Uri&gt;</span><span class="t">&lt;/CsvSource&gt;</span>
+    <span class="t">&lt;ExpressionRowFiltration&gt;</span>
+      <span class="t">&lt;FilterExpression&gt;</span>Amount &amp;gt; 0<span class="t">&lt;/FilterExpression&gt;</span>
+    <span class="t">&lt;/ExpressionRowFiltration&gt;</span>
+    <span class="t">&lt;LinkTo&gt;</span>
+      <span class="t">&lt;DbDestination&gt;</span>
+        <span class="t">&lt;ConnectionManager</span> <span class="k">type</span>=<span class="s">"PostgresConnectionManager"</span><span class="t">&gt;</span>
+          <span class="t">&lt;ConnectionString&gt;</span>Host=db;Database=sales<span class="t">&lt;/ConnectionString&gt;</span>
+        <span class="t">&lt;/ConnectionManager&gt;</span>
+        <span class="t">&lt;TableName&gt;</span>orders<span class="t">&lt;/TableName&gt;</span>
+      <span class="t">&lt;/DbDestination&gt;</span>
+    <span class="t">&lt;/LinkTo&gt;</span>
+  <span class="t">&lt;/Pipeline&gt;</span>
+<span class="t">&lt;/EtlDataFlowStep&gt;</span></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Compare -->
+      <section class="section-line" id="compare">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Is EtlKit the right tool?</h2>
+            <p>
+              EtlKit is a library for developers. If that is not what you need,
+              one of these will serve you better.
+            </p>
+          </div>
+          <div class="table-scroll">
+            <table class="matrix vs">
+              <thead>
+                <tr>
+                  <th>If you need</th>
+                  <th>Pick</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="ours">
+                  <td>
+                    Pipelines written in C#, reviewed and tested like the rest
+                    of your code, running inside your own app or job on any OS
+                  </td>
+                  <td><strong>EtlKit</strong> — MIT, no server to run</td>
+                </tr>
+                <tr>
+                  <td>
+                    A visual designer for a SQL Server-centric team, scheduled
+                    by SQL Server Agent
+                  </td>
+                  <td>
+                    <strong>SSIS</strong> — ships with SQL Server licences,
+                    Windows-first
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    A vendor-supported .NET ETL library with commercial support
+                    and the newer ETLBox feature set
+                  </td>
+                  <td>
+                    <strong>ETLBox 2.x+</strong> — closed-source, commercial
+                    licence. EtlKit continues its open 1.x line
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Hundreds of ready-made SaaS connectors and a UI for loading
+                    data into a warehouse
+                  </td>
+                  <td>
+                    <strong>Airbyte</strong> — an ELT platform you deploy and
+                    operate
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    A long-running data routing server with a visual flow editor
+                    and provenance tracking
+                  </td>
+                  <td><strong>Apache NiFi</strong> — JVM-based</td>
+                </tr>
+                <tr>
+                  <td>One query, one table, run once</td>
+                  <td>
+                    <strong>Plain ADO.NET or Dapper</strong>
+                    — no library needed
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -244,7 +798,7 @@ dest.<span class="t">Wait</span>();</pre>
           <div class="section-head">
             <h2>Resources</h2>
             <p>
-              Everything lives in the open. Browse the guides, generate the API
+              Everything lives in the open. Browse the guides, read the API
               reference, or grab a release.
             </p>
           </div>
@@ -266,7 +820,7 @@ dest.<span class="t">Wait</span>();</pre>
                 Context7.
               </p>
             </a>
-            <a class="link-card" href="https://rpsft.github.io/etlbox/">
+            <a class="link-card" href="https://etlkit.github.io/etlkit/">
               <span class="nm">API Reference <span class="arr">↗</span></span>
               <p>
                 Generated from XML comments — the full public surface of every
@@ -306,6 +860,10 @@ dest.<span class="t">Wait</span>();</pre>
                 The full solution on GitHub — issues, pull requests, and tests.
               </p>
             </a>
+            <a class="link-card" href="/llms.txt">
+              <span class="nm">llms.txt <span class="arr">↗</span></span>
+              <p>A plain-text summary of EtlKit for AI coding assistants.</p>
+            </a>
           </div>
         </div>
       </section>
@@ -328,7 +886,7 @@ dest.<span class="t">Wait</span>();</pre>
           <a href="https://github.com/etlkit/etlkit/blob/master/docs/README.md"
             >Documentation</a
           >
-          <a href="https://rpsft.github.io/etlbox/">API Reference</a>
+          <a href="https://etlkit.github.io/etlkit/">API Reference</a>
           <a href="https://www.nuget.org/packages?q=Owner%3AEtlKit">NuGet</a>
           <a href="https://github.com/etlkit/etlkit/releases">Releases</a>
           <a href="https://github.com/etlkit/etlkit/blob/master/LICENSE"

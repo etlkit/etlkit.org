@@ -1,0 +1,198 @@
+# EtlKit
+
+> EtlKit is a free, open-source (MIT) ETL library and data integration toolbox for .NET.
+> Data pipelines are written in C# (or declared in XML) from source, transformation and
+> destination components that run on TPL Dataflow, plus control-flow tasks for one-line DDL
+> and SQL. Core packages target .NET Standard 2.0. It continues the open-source 1.x line of
+> ETLBox by Andreas Lennartz; in 2.0 the packages were renamed from EtlBox.Classic to EtlKit.
+
+- Website: https://www.etlkit.org/
+- Source: https://github.com/etlkit/etlkit
+- NuGet: https://www.nuget.org/packages?q=Owner%3AEtlKit
+- API reference: https://etlkit.github.io/etlkit/
+- License: MIT
+
+## When to use EtlKit
+
+- You write .NET and want ETL/ELT logic in C#, reviewed, unit-tested and deployed with the rest
+  of your code — an alternative to SSIS packages.
+- You move data between relational databases, files and message queues inside your own app,
+  worker service or console job; there is no server to install.
+- You need bulk loads, table synchronisation (upsert with deletions), file imports with
+  bad-row capture, or long-running ingestion from Kafka, MongoDB change streams or a
+  PostgreSQL table.
+
+Pick something else when you need a visual designer (SSIS), hundreds of ready-made SaaS
+connectors with a UI (Airbyte), a standalone data-routing server (Apache NiFi), or vendor
+support for the closed-source ETLBox 2.x+. For a single one-off query, plain ADO.NET or Dapper
+is enough.
+
+## Install
+
+```
+dotnet add package EtlKit
+```
+
+`EtlKit` is the only package a basic setup needs. Add-on packages are opt-in:
+
+- `EtlKit.ClickHouse` — ClickHouse connection manager (.NET Standard 2.1)
+- `EtlKit.Kafka` — `KafkaJsonSource<T>` consumer, `KafkaTransformation` producer
+- `EtlKit.RabbitMq` — `RabbitMqTransformation` publisher
+- `EtlKit.MongoDB` — `MongoChangeStreamSource<T>` (net6.0+, replica set required)
+- `EtlKit.PostgresStreaming` — `PostgresXminTailSource<T>` (PostgreSQL 13+)
+- `EtlKit.Rest` — `RestTransformation`, an HTTP call per row
+- `EtlKit.AI` — `AIBatchTransformation` for OpenAI-compatible chat models
+- `EtlKit.Json` — `JsonTransformation` (JSONPath)
+- `EtlKit.Scripting` — `ScriptedRowTransformation` (C# expressions compiled with Roslyn)
+- `EtlKit.DynamicLinq` — `ExpressionRowFiltration` (Dynamic LINQ string filters)
+- `EtlKit.Serialization` — XML pipeline configuration via `DataFlowXmlReader`
+- `EtlKit.Logging.Database` — writes ETL log events to a database table
+
+`EtlKit.Common` and `EtlKit.Primitives` are dependencies; do not reference them directly.
+
+## Data flow in three steps
+
+1. Create the components.
+2. Connect them with `LinkTo()`. It returns the target, so calls chain; pass a `Predicate<T>`
+   to route rows to different destinations.
+3. Run the source and wait for every destination: `source.Execute()` + `dest.Wait()`, or
+   `await source.ExecuteAsync()` + `await dest.Completion`. There is no `WaitAsync()` and no
+   `Network` class.
+
+```csharp
+using EtlKit.Common.DataFlow;   // RowTransformation
+using EtlKit.ConnectionManager; // SqlConnectionManager, PostgresConnectionManager, ...
+using EtlKit.DataFlow;          // CsvSource, DbDestination, ...
+
+var conn   = new SqlConnectionManager("Data Source=.;Initial Catalog=demo;Integrated Security=SSPI;");
+var source = new CsvSource<Order>("orders.csv");
+var clean  = new RowTransformation<Order>(o => { o.Email = o.Email.Trim(); return o; });
+var dest   = new DbDestination<Order>(conn, "Orders");
+
+source.LinkTo(clean).LinkTo(dest);
+
+await source.ExecuteAsync();
+await dest.Completion;
+```
+
+Rows are POCOs (properties map to columns by name, or via `[ColumnMap("col")]`),
+`ExpandoObject` (non-generic component variants such as `CsvSource`, `DbDestination`), or
+`string[]` / `object[]`.
+
+Rows that throw in a component can be routed instead of failing the flow:
+`component.LinkErrorTo(errorDest)` emits `EtlKitError` rows (ErrorText, ReportTime, Exception,
+RecordAsJson); `CreateErrorTableTask` creates a table for them.
+
+## Connectors
+
+Relational databases use the generic `DbSource<T>` / `DbDestination<T>` with a connection
+manager. `DbDestination` writes in batches (default 1000 rows) using the fastest path per
+database.
+
+| Connector | Source | Destination | Streaming | Resumable | Bulk write | Package |
+|---|---|---|---|---|---|---|
+| SQL Server (`SqlConnectionManager`) | yes | yes | no | no | SqlBulkCopy | EtlKit |
+| PostgreSQL (`PostgresConnectionManager`) | yes | yes | no | no | binary COPY | EtlKit |
+| PostgreSQL table tail (`PostgresXminTailSource<T>`) | yes | no | polling | checkpoint | — | EtlKit.PostgresStreaming |
+| MySQL (`MySqlConnectionManager`) | yes | yes | no | no | multi-row INSERT | EtlKit |
+| SQLite (`SQLiteConnectionManager`) | yes | yes | no | no | INSERTs in one transaction | EtlKit |
+| ClickHouse (`ClickHouseConnectionManager`) | yes | yes | no | no | INSERT … FORMAT CSV | EtlKit.ClickHouse |
+| MS Access (`AccessOdbcConnectionManager`) | yes | yes | no | no | multi-row INSERT | EtlKit |
+| MongoDB (`MongoChangeStreamSource<T>`) | yes | no | change streams | resume token | — | EtlKit.MongoDB |
+| Kafka (`KafkaJsonSource<T>`, `KafkaTransformation`) | yes | producer | yes | consumer-group offsets | batched producer | EtlKit.Kafka |
+| RabbitMQ (`RabbitMqTransformation`) | no | publish | no | no | — | EtlKit.RabbitMq |
+| CSV / JSON / XML (`CsvSource<T>`, `JsonDestination<T>`, ...) | yes | yes | no | no | streamed | EtlKit |
+| Excel (`ExcelSource<T>`) | yes | no | no | no | — | EtlKit |
+| HTTP (`ResourceType.Http` on file components, `RestTransformation`) | yes | yes | no | no | — | EtlKit, EtlKit.Rest |
+| .NET collections (`MemorySource<T>`, `MemoryDestination<T>`) | yes | yes | no | no | — | EtlKit |
+| Anything else (`CustomSource<T>`, `CustomDestination<T>`) | yes | yes | — | — | — | EtlKit |
+
+Streaming sources run until their `CancellationToken` is cancelled:
+`source.Execute(cancellationToken)`. Resumable sources load their position from an
+`ICheckpointStore<TPosition>` (ready-made: `DbCheckpointStore<TPosition>`); a terminal
+`CheckpointWriter<TInput, TPosition>` commits it after the destination has written the row.
+Delivery is at-least-once, so destinations should be idempotent; committing inside the
+destination's own transaction gives effective exactly-once.
+
+`PostgresXminTailSource<T>` polls by transaction ID (xmin frontier). It sees inserts and
+updates but not deletes, and it is not logical-replication CDC.
+
+## Transformations
+
+- Non-blocking: `RowTransformation`, `RowBatchTransformation`, `Aggregation`
+  (`[GroupColumn]`, `[AggregateColumn]`), `MergeJoin`, `Multicast`, `RowDuplication`,
+  `RowMultiplication`, `RowFiltration`, `ExpressionRowFiltration`, `ScriptedRowTransformation`,
+  `SqlQueryTransformation`, `SqlCommandTransformation`, `JsonTransformation`,
+  `RestTransformation`, `AIBatchTransformation`, `KafkaTransformation`, `RabbitMqTransformation`.
+- Partially blocking (hold the lookup side in memory): `LookupTransformation`, `CrossJoin`.
+- Blocking (hold all rows): `BlockTransformation`, `Sort`.
+
+`DbMerge<T>` synchronises a destination table with the incoming rows: it marks each row as
+insert, update, delete or unchanged using `[IdColumn]`, `[CompareColumn]` and `[DeleteColumn]`
+(or `MergeableRow`). Modes: `Full`, `NoDeletions`, `Delta`. Tested on SQL Server, PostgreSQL,
+MySQL, SQLite and ClickHouse.
+
+## Control flow
+
+One-line tasks over any connection manager, in `EtlKit.ControlFlow`: `SqlTask.ExecuteNonQuery`,
+`SqlTask.ExecuteReader`, `CreateTableTask.Create`, `DropTableTask`, `IfTableOrViewExistsTask`,
+`RowCountTask.Count`, `TruncateTableTask`, `CreateIndexTask`, `CreateViewTask`,
+`CreateProcedureTask`, and more. Set `ControlFlow.DefaultDbConnection` to omit the connection.
+
+Logging uses Microsoft.Extensions.Logging: set `ControlFlow.LoggerFactory` or inject `ILogger<T>`
+into a component.
+
+## XML pipelines
+
+`EtlKit.Serialization` builds a data flow from XML at runtime. Element names are C# class names,
+child elements are property names. `<LinkTo>` connects a component to the next; `<Pipeline>`
+lists steps in order (the first may be a source) and a `<LinkTo>` inside it routes the output.
+The root element is your own class implementing `IDataFlow` (for example `EtlDataFlowStep`).
+Delegate-based components such as `RowTransformation` cannot be expressed in XML; use
+`ExpressionRowFiltration`, `ScriptedRowTransformation`, `RestTransformation` or
+`AIBatchTransformation`.
+
+```xml
+<EtlDataFlowStep>
+    <Pipeline>
+        <MemorySource />
+        <ExpressionRowFiltration>
+            <FilterExpression>Amount &gt; 0</FilterExpression>
+        </ExpressionRowFiltration>
+        <LinkTo>
+            <DbDestination>
+                <ConnectionManager type="SqlConnectionManager">
+                    <ConnectionString>Data Source=.;Initial Catalog=demo;Integrated Security=SSPI;</ConnectionString>
+                </ConnectionManager>
+                <TableName>orders</TableName>
+            </DbDestination>
+        </LinkTo>
+    </Pipeline>
+</EtlDataFlowStep>
+```
+
+```csharp
+var step = DataFlowXmlReader.Deserialize<EtlDataFlowStep>(xml, new ErrorLogDestination());
+```
+
+## Docs
+
+- [Overview](https://github.com/etlkit/etlkit/blob/master/docs/overview.md): what EtlKit is and why
+- [Getting started](https://github.com/etlkit/etlkit/blob/master/docs/getting-started.md): core concepts
+- [A simple data flow](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/simple-flow.md): CSV → transformation → database tutorial
+- [Linking and execution](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/linking-execution.md): LinkTo, predicates, error linking, sync vs async
+- [Database sources and destinations](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/db-sources-destinations.md): connection managers and connection strings
+- [File sources and destinations](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/file-sources-destinations.md): CSV, JSON, XML, Excel, files or HTTP
+- [Transformations](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/transformations.md): buffering, blocking and non-blocking components
+- [DbMerge](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/db-merge.md): table synchronisation
+- [Streaming sources](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/streaming-sources.md): MongoDB change streams, PostgreSQL tail, checkpoints
+- [XML configuration](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/xml-configuration.md): declarative pipelines
+- [Kafka](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/kafka.md), [RabbitMQ](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/rabbitmq.md), [REST](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/rest.md), [AI](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/ai.md)
+- [Data types](https://github.com/etlkit/etlkit/blob/master/docs/dataflow/data-types.md): POCOs, ExpandoObject, arrays, ColumnMap
+- [Control flow](https://github.com/etlkit/etlkit/blob/master/docs/controlflow/overview.md) and [logging](https://github.com/etlkit/etlkit/blob/master/docs/controlflow/logging.md)
+
+## Optional
+
+- [Changelog](https://github.com/etlkit/etlkit/blob/master/CHANGELOG.md): release notes and the EtlBox.Classic → EtlKit rename mapping
+- [Examples](https://github.com/etlkit/etlkit/tree/master/docs/examples): end-to-end samples
+- [Context7](https://context7.com/etlkit/etlkit): docs and source indexed for AI assistants

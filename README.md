@@ -7,11 +7,25 @@ This is a single static page. No build step, no framework.
 ## Structure
 
 ```
-index.html          markup
+index.html          markup, meta tags, JSON-LD structured data
 styles.css          page layout
 etlkit-tokens.css   EtlKit brand tokens (colors, type, spacing, fonts)
-assets/             logo, mark, favicons
+assets/             logo, mark, favicons, social preview image
+llms.txt            summary of EtlKit for LLM assistants (https://llmstxt.org)
+robots.txt          crawler rules and sitemap location
+sitemap.xml         page list for search engines
+tools/              sources of generated assets, not deployed (.vercelignore)
 ```
+
+The canonical host is `https://www.etlkit.org` (the apex domain redirects
+there). Use it in `canonical`, `og:url`, `sitemap.xml` and `robots.txt`.
+
+When the page content changes, update `lastmod` in `sitemap.xml`. When facts
+about the library change (packages, connectors, API), update `llms.txt` and
+the connector table in `index.html` together.
+
+The social preview `assets/og-image.png` is rendered from
+`tools/og-image.html`; the command is in that file's header comment.
 
 ## Local preview
 
