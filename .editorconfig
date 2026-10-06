@@ -12,10 +12,6 @@ indent_style = space
 indent_size = 2
 max_line_length = 80
 
-# HTML is indented with 4 spaces upstream.
-[*.html]
-indent_size = 2
-
 # Markdown: trailing spaces are significant (hard line breaks).
 [*.md]
 trim_trailing_whitespace = false
