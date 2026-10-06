@@ -1,0 +1,92 @@
+<!doctype html>
+<!--
+  Source of assets/og-image.png (1200×630, the social preview card).
+  Re-render after editing, from the repo root:
+
+    chrome --headless=new --hide-scrollbars --force-device-scale-factor=1 \
+      --window-size=1200,630 --virtual-time-budget=5000 \
+      --screenshot=assets/og-image.png tools/og-image.html
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../etlkit-tokens.css" />
+    <style>
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        margin: 0;
+        overflow: hidden;
+      }
+      body {
+        background: var(--ek-gray-900);
+        color: var(--ek-gray-50);
+        padding: 72px 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .lockup svg {
+        width: 76px;
+        height: 76px;
+      }
+      .lockup .ek-wordmark {
+        font-size: 60px;
+        color: var(--ek-white);
+      }
+      h1 {
+        color: var(--ek-white);
+        font: var(--fw-bold) 76px/1.05 var(--font-sans);
+        letter-spacing: var(--ls-tight);
+        max-width: 15ch;
+      }
+      h1 em {
+        color: var(--ek-vermillion);
+        font-style: normal;
+      }
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font: var(--fw-medium) 26px/1 var(--font-mono);
+        color: var(--ek-gray-400);
+      }
+      .foot b {
+        color: var(--ek-gray-100);
+        font-weight: var(--fw-medium);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="lockup">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <g
+          fill="none"
+          stroke="#F8462D"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 75 C34 75 38 50 50 50 S66 25 82 25"></path>
+        </g>
+        <g fill="#F8462D">
+          <circle cx="18" cy="75" r="9"></circle>
+          <circle cx="50" cy="50" r="9"></circle>
+          <circle cx="82" cy="25" r="9"></circle>
+        </g>
+      </svg>
+      <span class="ek-wordmark">Etl<b>Kit</b></span>
+    </div>
+    <h1>The open-source <em>ETL</em> toolkit for .NET.</h1>
+    <div class="foot">
+      <span><b>dotnet add package EtlKit</b></span>
+      <span>MIT · etlkit.org</span>
+    </div>
+  </body>
+</html>
